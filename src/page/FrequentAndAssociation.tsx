@@ -66,7 +66,7 @@ function AprioriAnalysis() {
 
     try {
       const response = await axios.post<AnalysisResult>(
-        "http://127.0.0.1:8000/api/apriori/",
+        `${import.meta.env.VITE_API_URL_SERVER}/api/apriori/`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

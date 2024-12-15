@@ -38,7 +38,7 @@ export default function DecisionTreeClassification() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/decision_tree/",
+        `${import.meta.env.VITE_API_URL_SERVER}/api/decision_tree/`,
         formData,
         {
           headers: {

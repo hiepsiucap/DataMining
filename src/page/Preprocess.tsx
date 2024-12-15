@@ -33,7 +33,7 @@ export default function CorrelationCalculator() {
 
     try {
       const response = await axios.post<CorrelationResponse>(
-        "http://127.0.0.1:8000/api/correlation/",
+        `${import.meta.env.VITE_API_URL_SERVER}/api/correlation/`,
         {
           input: inputNumbers,
         }
