@@ -1,10 +1,8 @@
 /** @format */
 
-import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import {
   Home,
-  Database,
   Filter,
   BarChart3,
   Layers,
