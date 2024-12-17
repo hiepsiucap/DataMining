@@ -9,7 +9,8 @@ interface CorrelationResponse {
 }
 
 export default function CorrelationCalculator() {
-  const [inputArray, setInputArray] = useState<string>("");
+  const [chieucao, setChieucao] = useState<string>(""); // State cho chiều cao
+  const [cannang, setCannang] = useState<string>(""); // State cho cân nặng
   const [correlation, setCorrelation] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,13 +19,23 @@ export default function CorrelationCalculator() {
     e.preventDefault();
 
     // Input validation
-    const inputNumbers = inputArray
+    const chieucaoNumbers = chieucao
       .split(",")
       .map((num) => parseFloat(num.trim()))
       .filter((num) => !isNaN(num));
 
-    if (inputNumbers.length < 2) {
-      setError("Vui lòng nhập ít nhất hai số");
+    const cannangNumbers = cannang
+      .split(",")
+      .map((num) => parseFloat(num.trim()))
+      .filter((num) => !isNaN(num));
+
+    if (chieucaoNumbers.length < 2 || cannangNumbers.length < 2) {
+      setError("Vui lòng nhập ít nhất hai số cho mỗi dãy số.");
+      return;
+    }
+
+    if (chieucaoNumbers.length !== cannangNumbers.length) {
+      setError("Chiều cao và cân nặng phải có cùng độ dài.");
       return;
     }
 
@@ -35,15 +46,15 @@ export default function CorrelationCalculator() {
       const response = await axios.post<CorrelationResponse>(
         `${import.meta.env.VITE_API_URL_SERVER}/api/correlation/`,
         {
-          input: inputNumbers,
+          chieucao: chieucaoNumbers,
+          cannang: cannangNumbers,
         }
       );
 
       setCorrelation(response.data.correlation);
       setError(null);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.response?.data || "Có lỗi xảy ra!");
+    } catch (err: unknown) {
+      setError(err.response?.data?.error || "Có lỗi xảy ra!");
       setCorrelation(null);
     } finally {
       setIsLoading(false);
@@ -65,27 +76,46 @@ export default function CorrelationCalculator() {
             onSubmit={handleSubmit}
             className="space-y-4"
           >
+            {/* Input Chiều Cao */}
             <div>
               <label
-                htmlFor="inputArray"
+                htmlFor="chieucao"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Nhập dãy số (ngăn cách bằng dấu phẩy)
+                Nhập dãy số Chiều Cao (ngăn cách bằng dấu phẩy)
               </label>
               <input
                 type="text"
-                id="inputArray"
-                value={inputArray}
-                onChange={(e) => setInputArray(e.target.value)}
+                id="chieucao"
+                value={chieucao}
+                onChange={(e) => setChieucao(e.target.value)}
                 placeholder="175, 133, 185, ..."
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg 
                            focus:outline-none focus:ring-2 focus:ring-indigo-500 
                            transition-all duration-300"
               />
-              <p className="text-xs text-gray-500 mt-2">
-                Nhập ít nhất hai số để tính tương quan.
-              </p>
+            </div>
+
+            {/* Input Cân Nặng */}
+            <div>
+              <label
+                htmlFor="cannang"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Nhập dãy số Cân Nặng (ngăn cách bằng dấu phẩy)
+              </label>
+              <input
+                type="text"
+                id="cannang"
+                value={cannang}
+                onChange={(e) => setCannang(e.target.value)}
+                placeholder="65, 67, 71, ..."
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg 
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                           transition-all duration-300"
+              />
             </div>
 
             <button
@@ -104,6 +134,8 @@ export default function CorrelationCalculator() {
               {isLoading ? "Đang tính toán..." : "Tính Tương Quan"}
             </button>
           </form>
+
+          {/* Kết Quả */}
           {correlation !== null && (
             <div className="bg-green-50 border border-green-300 rounded-lg p-4 flex items-center gap-3 text-green-800">
               <CheckCircle className="w-6 h-6 text-green-600" />
@@ -118,6 +150,8 @@ export default function CorrelationCalculator() {
               </div>
             </div>
           )}
+
+          {/* Thông báo lỗi */}
           {error && (
             <div className="bg-red-50 border border-red-300 rounded-lg p-4 flex items-center gap-3 text-red-800">
               <AlertTriangle className="w-6 h-6 text-red-600" />
