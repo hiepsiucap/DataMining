@@ -53,7 +53,8 @@ export default function CorrelationCalculator() {
 
       setCorrelation(response.data.correlation);
       setError(null);
-    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       setError(err.response?.data?.error || "Có lỗi xảy ra!");
       setCorrelation(null);
     } finally {

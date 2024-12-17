@@ -38,7 +38,7 @@ export default function PlayBallPredictor() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/naive-bayes/",
+        `${import.meta.env.VITE_API_URL_SERVER}/api/naive-bayes/`,
         inputData
       );
       setPrediction(response.data.prediction);
