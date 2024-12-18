@@ -8,6 +8,7 @@ import {
   Layers,
   List,
   PercentCircle,
+  Layers2,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -40,6 +41,11 @@ const NAV_ITEMS = [
     to: "/frequentandassociate",
     icon: List,
     label: "Kết Hợp Apriori",
+  },
+  {
+    to: "/rawdata",
+    icon: Layers2,
+    label: "Dữ liệu thô",
   },
 ];
 
